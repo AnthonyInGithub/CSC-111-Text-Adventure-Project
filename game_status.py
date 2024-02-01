@@ -1,11 +1,10 @@
-import world
-
-
-# import inventory
 
 class GameStatus:
     """This class control the game status. There are 2 status of game. started, finished.
         The transition of game status is determined by the movement steps.
+
+        IMPORTANT:
+        THIS IS A STATIC CLASS THAT DOESN'T NEED TO BE INITIALIZE
 
         Instance Attributes:
             - steps: This is how many step did play take
@@ -13,21 +12,13 @@ class GameStatus:
             - MAX_STEP: the maximum number of step player can take
             - DESTINATION_POSITION: destination's xy position
     """
-    _step: int
-    _game_run_status: bool
-    _MAX_STEP: int
-    _DESTINATION_POSITION: list
+    _step = 0
+    _game_run_status = True
+    _MAX_STEP = 5
+    _DESTINATION_POSITION = [6, 4]
 
-    def __init__(self):
-        """
-        Initialize the game status, settle down max_step
-        """
-        self._step = 0
-        self._game_run_status = True
-        self._MAX_STEP = 5
-        self._DESTINATION_POSITION = [6, 4]
-
-    def check_status(self, locationXY:list)->bool:
+    @staticmethod
+    def check_status(locationXY:list)->bool:
         """
         This is the update function called on every move. It checks the location and steps to
         determine the current game status
@@ -35,36 +26,43 @@ class GameStatus:
         Instance Attribute:
             - locationXY: current player location
         """
-        if self._step >= self._MAX_STEP:
-            self._game_run_status = False
-        if self.check_destination_arrival(locationXY):
-            self._game_run_status = False
+        if GameStatus._step >= GameStatus._MAX_STEP:
+            _game_run_status = False
+        if GameStatus.check_destination_arrival(locationXY):
+            GameStatus._game_run_status = False
         # needs inventory system here
 
-        return self._game_run_status
+        return GameStatus._game_run_status
 
-    def get_current_steps_left(self):
+    @staticmethod
+    def get_current_steps_left():
         """This function return steps left"""
-        return self._MAX_STEP - self._step
+        return GameStatus._MAX_STEP - GameStatus._step
 
-    def get_game_over_comment(self, locationXY:list) -> str:
+    @staticmethod
+    def get_game_over_comment(locationXY:list) -> str:
         """This function determines what's final comment based on win or lost
         Instance Attribute:
             - locationXY: current player location
         """
-        if self.check_destination_arrival(locationXY):  # XY of test room. Check game design document for full XY correspondent list.
+        if GameStatus.check_destination_arrival(locationXY):  # XY of test room. Check game design document for full XY correspondent list.
             return "Congra, pass"
         else:
             return "ohh, you didn't arrive at the given step with everything you need"
-    def check_destination_arrival(self, locationXY: list):
+
+    @staticmethod
+    def check_destination_arrival(locationXY: list) -> bool:
         """
         This function check whether the player is at the destination or not
         """
-        return locationXY == self._DESTINATION_POSITION
-    def update_step(self):
-        """This function update the step"""
-        self._step += 1
+        return locationXY == GameStatus._DESTINATION_POSITION
 
-    def increase_steps_on_coffee_event(self):
+    @staticmethod
+    def update_step():
+        """This function update the step"""
+        GameStatus._step += 1
+
+    @staticmethod
+    def increase_steps_on_coffee_event():
         """This functions give player more step when player complete a specific event"""
-        self._step -= 3
+        GameStatus._step -= 3
