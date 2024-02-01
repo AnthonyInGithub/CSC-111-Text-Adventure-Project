@@ -20,6 +20,50 @@ This file is Copyright (c) 2024 CSC111 Teaching Team
 """
 from typing import Optional, TextIO
 
+class Item:
+    """An item in our text adventure game world.
+
+    Instance Attributes:
+        - name: name of the item
+        - id: special integer id of the item
+        - init_location: where the item initially is
+        - short_description: brief description of the item
+        - long_description: specific description of the item
+        - score: score earn by taking this item
+        - can_add: socre can be only earned when item is taken for the first time
+
+    Representation Invariants:
+        - # TODO
+    """
+    name: str
+    id: int
+    init_location: list[int]
+    short_description: str
+    long_description: str
+    score: float
+    can_add: bool
+
+    def __init__(self, name: str, id: int, location_x: int, location_y: int,
+                 short_description: str, long_description: str, score: float) -> None:
+        """Initialize a new item.
+        """
+
+        # NOTES:
+        # This is just a suggested starter class for Item.
+        # You may change these parameters and the data available for each Item object as you see fit.
+        # (The current parameters correspond to the example in the handout).
+        # Consider every method in this Item class as a "suggested method".
+        #
+        # The only thing you must NOT change is the name of this class: Item.
+        # All item objects in your game MUST be represented as an instance of this class.
+
+        self.name = name
+        self.id = id
+        self.init_location = [location_x, location_y]
+        self.short_description = short_description
+        self.long_description = long_description
+        self.score = score
+        self.can_add = True
 
 
 class Location:
@@ -48,7 +92,7 @@ class Location:
     available_items: Optional[list[Item]]
     revisit: bool
 
-    def __init__(self, id:int, xy_axis:list[int], name:str, short_description:str, long_description:str, available_items: Optional[list[Item]]) -> None:
+    def __init__(self, id:int, xy_axis:list[int], name:str, short_description:str, long_description:str, available_items: Optional[list[Item]] = None) -> None:
         """Initialize a new location.
         """
         self.id = id
@@ -88,7 +132,7 @@ class World:
         - items: list of all items
         - location: list of all locations
     """
-    #items: list[Item]
+    items: list[Item]
     locations: list[Location]
     map: list[list]
 
@@ -172,50 +216,6 @@ class World:
 
 
 
-class Item:
-    """An item in our text adventure game world.
-
-    Instance Attributes:
-        - name: name of the item
-        - id: special integer id of the item
-        - init_location: where the item initially is
-        - short_description: brief description of the item
-        - long_description: specific description of the item
-        - score: score earn by taking this item
-        - can_add: socre can be only earned when item is taken for the first time
-
-    Representation Invariants:
-        - # TODO
-    """
-    name: str
-    id: int
-    init_location: list[int]
-    short_description: str
-    long_description: str
-    score: float
-    can_add: bool
-
-    def __init__(self, name: str, id: int, location_x: int, location_y: int,
-                 short_description: str, long_description: str, score: float) -> None:
-        """Initialize a new item.
-        """
-
-        # NOTES:
-        # This is just a suggested starter class for Item.
-        # You may change these parameters and the data available for each Item object as you see fit.
-        # (The current parameters correspond to the example in the handout).
-        # Consider every method in this Item class as a "suggested method".
-        #
-        # The only thing you must NOT change is the name of this class: Item.
-        # All item objects in your game MUST be represented as an instance of this class.
-
-        self.name = name
-        self.id = id
-        self.init_location = [location_x, location_y]
-        self.short_description = short_description
-        self.long_description = long_description
-        self.score = score
-        self.can_add = True
 
 
 class Player:
