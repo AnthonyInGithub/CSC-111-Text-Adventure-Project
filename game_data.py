@@ -21,6 +21,7 @@ This file is Copyright (c) 2024 CSC111 Teaching Team
 from typing import Optional, TextIO
 
 
+
 class Location:
     """A location in our text adventure game world.
 
@@ -168,3 +169,140 @@ class World:
                 continue
             temp += line
         return _my_all_location_information
+
+
+
+class Item:
+    """An item in our text adventure game world.
+
+    Instance Attributes:
+        - name: name of the item
+        - id: special integer id of the item
+        - init_location: where the item initially is
+        - short_description: brief description of the item
+        - long_description: specific description of the item
+        - score: score earn by taking this item
+        - can_add: socre can be only earned when item is taken for the first time
+
+    Representation Invariants:
+        - # TODO
+    """
+    name: str
+    id: int
+    init_location: list[int]
+    short_description: str
+    long_description: str
+    score: float
+    can_add: bool
+
+    def __init__(self, name: str, id: int, location_x: int, location_y: int,
+                 short_description: str, long_description: str, score: float) -> None:
+        """Initialize a new item.
+        """
+
+        # NOTES:
+        # This is just a suggested starter class for Item.
+        # You may change these parameters and the data available for each Item object as you see fit.
+        # (The current parameters correspond to the example in the handout).
+        # Consider every method in this Item class as a "suggested method".
+        #
+        # The only thing you must NOT change is the name of this class: Item.
+        # All item objects in your game MUST be represented as an instance of this class.
+
+        self.name = name
+        self.id = id
+        self.init_location = [location_x, location_y]
+        self.short_description = short_description
+        self.long_description = long_description
+        self.score = score
+        self.can_add = True
+
+
+class Player:
+    """
+    A Player in the text advanture game.
+
+    Instance Attributes:
+        - inventory: list of items carried by the player
+        - victory: determine if the player passes the game
+        - steps_taken: how many steps the player has taken so far
+        - curr_location: current location of the player
+        - curr_score: current score of the player
+
+    Representation Invariants:
+        - # TODO
+    """
+
+    inventory: list[Item]
+    victory: False
+    steps_taken: int
+    curr_location: [int]
+    max_step: int
+    curr_score: float
+
+    def __init__(self, x: int, y: int) -> None:
+        """
+        Initializes a new Player at position (x, y).
+        """
+
+        # NOTES:
+        # This is a suggested starter class for Player.
+        # You may change these parameters and the data available for the Player object as you see fit.
+
+        self.curr_location = [x, y]
+        self.inventory = []
+        self.victory = False
+        self.max_step = 20
+        self.curr_score = 0.0
+
+    def update_inventory(self, item: Item, action: str):
+        """
+        pop the item from inventory if action is drop, append the item if action is take
+        """
+        if action == 'take':
+            self.inventory.append(item)
+            if item.can_add:
+                self.update_score(item)
+        elif action == "drop":
+            self.inventory.remove(item)
+        # else:
+        #     print()
+
+    def game_win(self) -> bool:
+        """
+        check condtions for winning the game
+        """
+        if self.curr_location == [4, 6] and self.steps_taken <= self.max_step:
+            required_items = ["Tcard", "Cheat Sheet", "Lucky Pen"]
+            carried_items = [item.name for item in self.inventory]
+            return all([item in carried_items for item in required_items])
+
+        return False
+
+    def game_lose(self) -> bool:
+        """
+        check conditions for losing the game
+        """
+        if self.steps_taken > self.max_step:
+            return True
+        return False
+
+    def talk(self, location: list[int]) -> None:
+        """
+        Talk with the NPC to trigger out extra plot if any of NPCs exists in the location.
+        """
+        if location == [1, 5]:
+            print("You: Hi, do you see any of my T-card, cheat sheet, or pen?")
+            print("Steve: I did find a pen and a cheat sheet and I just left them in the Help Center.")
+        elif location == [1, 1]:
+            print("Bob: I LOST MY T-CARD! I AM GOING TO SUICIDE!")
+            print("You: ...")
+        else:
+            print("There is nobody here you can talk with.")
+
+    def update_score(self, item: Item) -> None:
+        """
+        When picking up an item, update player's score based on the score of the item.
+        """
+        self.curr_score += item.score
+        item.can_add = False

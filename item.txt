@@ -1,0 +1,5 @@
+0-(0,2)-Tcard-a card indicates the identity of a UofT student-Your name appears to be on the card.-30
+1-(4,0)-Cheat Sheet-a sheet is on the table-This is the cheat sheet you are looking for! You have been desperately writing this sheet for weeks, hopefully it will be useful on the exam.-15
+2-(4,0)-Lucky Pen-a pen is placed on the table-This is the lucky pen you are searching for! As its name suggested, this pen has helped you overcome countless exams with its magic luck.-15
+3-(0,1)-TCard-a card indicates the identity of a UofT student-The name "Bob" is shown on this card.-10
+4-(1,1)-Voucher-a Starbucks voucher-maybe you can get something out of it in Starbucks.-30
