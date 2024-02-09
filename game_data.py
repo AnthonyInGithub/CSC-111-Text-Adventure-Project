@@ -19,6 +19,8 @@ please consult our Course Syllabus.
 This file is Copyright (c) 2024 CSC111 Teaching Team
 """
 from typing import Optional, TextIO
+import climage
+
 
 class Item:
     """An item in our text adventure game world.
@@ -30,18 +32,19 @@ class Item:
         - short_description: brief description of the item
         - long_description: specific description of the item
         - score: score earn by taking this item
-        - can_add: socre can be only earned when item is taken for the first time
+        - can_earn: socre can be only earned when item is taken for the first time
 
     Representation Invariants:
         - # TODO
     """
     name: str
     id: int
-    init_location: list[int]
+    curr_location: list[int]
     short_description: str
     long_description: str
     score: float
     can_add: bool
+    can_earn = True
 
     def __init__(self, name: str, id: int, location_x: int, location_y: int,
                  short_description: str, long_description: str, score: float) -> None:
@@ -58,11 +61,11 @@ class Item:
         # All item objects in your game MUST be represented as an instance of this class.
 
         self.name = name
-        self.id = id
-        self.init_location = [location_x, location_y]
+        self.id = int(id)
+        self.curr_location = [int(location_x), int(location_y)]
         self.short_description = short_description
         self.long_description = long_description
-        self.score = score
+        self.score = float(score)
         self.can_add = True
 
 
@@ -87,12 +90,14 @@ class Location:
     id: int
     xy_axis: list[int]
     name: str
-    short_description:str
+    short_description: str
     long_description: str
     available_items: Optional[list[Item]]
     revisit: bool
+    image_file_location: str
 
-    def __init__(self, id:int, xy_axis:list[int], name:str, short_description:str, long_description:str, available_items: Optional[list[Item]] = None) -> None:
+    def __init__(self, id: int, xy_axis: list[int], name: str, short_description: str, long_description: str,
+                 image_file_location: str, available_items: Optional[list[Item]] = None) -> None:
         """Initialize a new location.
         """
         self.id = id
@@ -102,6 +107,8 @@ class Location:
         self.long_description = long_description
         self.available_items = available_items
         self.revisit = False
+        self.image_file_location = image_file_location
+
         # NOTES:
         # Data that could be associated with each Location object:
         # a position in the world map,
@@ -117,10 +124,10 @@ class Location:
         #
         # The only thing you must NOT change is the name of this class: Location.
         # All locations in your game MUST be represented as an instance of this class.
+
     def update_revisited(self) -> None:
         """This function update the revisit state"""
         self.revisit = True
-
 
 
 class Player:
@@ -133,17 +140,18 @@ class Player:
         - steps_taken: how many steps the player has taken so far
         - curr_location: current location of the player
         - curr_score: current score of the player
+        - can_add: each item can only be taken once before it is dropped
 
     Representation Invariants:
         - # TODO
     """
 
     inventory: list[Item]
-    victory: False
     steps_taken: int
-    curr_location: [int]
-    max_step: int
+    curr_location: list[int]
+    MAX_STEP: int
     curr_score: float
+    FINAL_LOCATION: list[int]
 
     def __init__(self, x: int, y: int) -> None:
         """
@@ -156,9 +164,10 @@ class Player:
 
         self.curr_location = [x, y]
         self.inventory = []
-        self.victory = False
-        self.max_step = 20
+        self.steps_taken = 0
+        self.MAX_STEP = 30
         self.curr_score = 0.0
+        self.FINAL_LOCATION = [6,4]
 
     def update_inventory(self, item: Item, action: str):
         """
@@ -166,51 +175,80 @@ class Player:
         """
         if action == 'take':
             self.inventory.append(item)
-            if item.can_add:
+            if item.can_earn:
                 self.update_score(item)
         elif action == "drop":
             self.inventory.remove(item)
-        # else:
-        #     print()
 
-    def game_win(self) -> bool:
+    def game_state(self) -> bool:
         """
-        check condtions for winning the game
+        check the condition of the game
         """
-        if self.curr_location == [4, 6] and self.steps_taken <= self.max_step:
-            required_items = ["Tcard", "Cheat Sheet", "Lucky Pen"]
-            carried_items = [item.name for item in self.inventory]
-            return all([item in carried_items for item in required_items])
+        if self.curr_location == self.FINAL_LOCATION:
+            return False
+        elif self.steps_taken > self.MAX_STEP:
+            return False
 
-        return False
+        return True
 
-    def game_lose(self) -> bool:
-        """
-        check conditions for losing the game
-        """
-        if self.steps_taken > self.max_step:
-            return True
-        return False
-
-    def talk(self, location: list[int]) -> None:
+    def talk(self, location: list[int], name: str) -> str:
         """
         Talk with the NPC to trigger out extra plot if any of NPCs exists in the location.
         """
-        if location == [1, 5]:
-            print("You: Hi, do you see any of my T-card, cheat sheet, or pen?")
-            print("Steve: I did find a pen and a cheat sheet and I just left them in the Help Center.")
-        elif location == [1, 1]:
-            print("Bob: I LOST MY T-CARD! I AM GOING TO SUICIDE!")
-            print("You: ...")
+        if location == [5, 1] and name == "steve":
+            return ("You: Hi, do you see any of my T-card, cheat sheet, or pen? \n Steve: I did find a pen and a cheat sheet and I just left them in the Help Center.")
+        elif location == [1, 1] and name == "bob":
+            return "Bob: I LOST MY T-CARD! I AM GOING TO SUICIDE!\nYou: ..."
         else:
-            print("There is nobody here you can talk with.")
+            return "There is nobody here you can talk with."
 
     def update_score(self, item: Item) -> None:
         """
         When picking up an item, update player's score based on the score of the item.
         """
         self.curr_score += item.score
-        item.can_add = False
+        item.can_earn = False
+
+    def print_inventory(self)->str:
+        """
+        print out all the items in player's inventory
+        """
+        return "Your inventory: " + str([item.name for item in self.inventory])
+
+    def check_inventory_by_id(self, item_id: int) -> bool:
+        """
+        Check whether there exist such an item by item_id.
+        """
+        for item in self.inventory:
+            if item.id == item_id:
+                return True
+        return False
+
+
+class EventItem(Item):
+    """ A special item that can trigger some events when is taken by the player.
+    This is a subclass of Item class.
+    """
+
+    def __init__(self, name: str, id: int, location_x: int, location_y: int, short_description: str,
+                 long_description: str, score: float):
+        super().__init__(name, id, location_x, location_y, short_description, long_description, score)
+        self.can_add = True
+
+    def drop_event_reward2(self, player: Player):
+        """
+        player gets extra steps after dropping this item
+        """
+        print("You bought a cup of coffee using this voucher. Your energy is restored!")
+        player.steps_taken -= 5
+
+    def drop_event_reward1(self):
+        """
+        player gets another item by dropping this item to NPC
+        """
+        print('Bob: Thank you for bringing back my TCard! Take this Starbucks voucher as my gift!\n'
+              'Starbucks voucher has been added to your inventory')
+
 
 class World:
     """A text adventure game world storing all location, item and map data.
@@ -244,10 +282,17 @@ class World:
         # The map MUST be stored in a nested list as described in the load_map() function's docstring below
         self.map = self.load_map(map_data)
         temp_location = self.initialize_location_info(location_data)
-        print(temp_location)
         self.locations = []
         for location in temp_location:
-            self.locations.append(Location(location[0],location[1],location[2],location[3],location[4]))
+            self.locations.append(
+                Location(location[0], location[1], location[2], location[3], location[4], location[5]))
+        self.items = []
+        for line in open(items_data):
+            new_item = line.split('-')
+            self.items.append(
+                Item(new_item[0], new_item[1], new_item[2], new_item[3], new_item[4], new_item[5], new_item[6]))
+        EVENT_ITEM_NUMBER = 2
+        self.initialize_event_item(EVENT_ITEM_NUMBER)
 
         # NOTE: You may choose how to store location and item data; create your own World methods to handle these
         # accordingly. The only requirements:
@@ -271,7 +316,6 @@ class World:
             _my_map.append([int(x) for x in line.split()])
         return _my_map
 
-
     # NOTE: The method below is REQUIRED. Complete it exactly as specified.
     def get_location(self, x: int, y: int) -> Optional[Location]:
         """Return Location object associated with the coordinates (x, y) in the world map, if a valid location exists at
@@ -279,10 +323,9 @@ class World:
          return None.)
         """
         for location in self.locations:
-            if location.xy_axis == [x,y]:
+            if location.xy_axis == [x, y]:
                 return location
         return None
-
 
     def initialize_location_info(self, location_data: TextIO) -> list[list]:
         """
@@ -302,35 +345,130 @@ class World:
             temp += line
         return _my_all_location_information
 
-    def examine(self, name:str, player: Player) -> str:
+    def examine(self, name: str, player: Player) -> str:
+        """
+        print out the long description of an item
+        """
         for item in player.inventory:
             if name == item.name:
                 return item.long_description
-        for item in self.items:
-            if item.name == name and item.init_location == player.curr_location:
-                return item.long_description
-    def look(self, player:Player):
+
+        return 'You do not have such item in your inventory!'
+        # for item in self.items:
+        #     if item.name == name and item.init_location == player.curr_location:
+        #         return item.long_description
+
+    def look(self, player: Player):
+        """
+        show the long description of the location and short description of items(if any) in that location
+        """
         location_description = ""
         for location in self.locations:
             if location.xy_axis == player.curr_location:
-                location_description = location.long_description
-        item_short_description = ""
+                location_description = location.name + ': ' + location.long_description
+                location.revisit = True
+                print(climage.convert(location.image_file_location, is_unicode=True, width=120) + "\n")
+        item_short_description = "\nItem Available Here:\n"
         for item in self.items:
-            if item.init_location == player.curr_location:
+            if item.curr_location == player.curr_location:
                 item_short_description += item.name + ": "
                 item_short_description += item.short_description + "\n"
+        if item_short_description == "\nItem Available Here:\n": #nothing is here
+            item_short_description += "None\n"
 
-        return location_description +"\n"+ item_short_description
-    def take(self, name:str, player:Player) -> str:
+        return location_description + "\n" + item_short_description
+
+    def take(self, name: str, player: Player) -> str:
+        """
+        take an item and update player's inventory
+        """
         for item in self.items:
-            if item.init_location == player.curr_location and item.name == name:
+            if item.curr_location == player.curr_location and item.name == name and item.can_add:
                 player.update_inventory(item, "take")
                 item.can_add = False
-                return "You have take "+item.name+" into your backpack."
-    def drop(self, name: str, player:Player):
+                return "You have take " + item.name + " into your backpack."
+
+        return 'There is no such item can be taken.'
+
+    def drop(self, name: str, player: Player) -> str:
+        """
+        drop an item and update player's inventory
+        """
+        if not player.inventory:
+            return 'Your inventory is currently empty!'
         for item in player.inventory:
             if name == item.name:
-                player.update_inventory(item, "drop")
-                item.can_add = True
-                item.init_location = player.curr_location
-                return "You have drop "+item.name+" ."
+                if isinstance(item, EventItem) and player.curr_location == [1, 1] and item.id == 3:  # T card event
+                    item.drop_event_reward1()
+                    for voucher_finder in self.items:
+                        if voucher_finder.name == "voucher":
+                            player.update_inventory(voucher_finder, "take")
+                    player.update_inventory(item, "drop")
+                elif isinstance(item, EventItem) and player.curr_location == [7,2] and item.id == 4:  # coffee event
+                    item.drop_event_reward2(player)
+                    player.update_inventory(item, "drop")
+                else:
+                    player.update_inventory(item, "drop")
+                    item.can_add = True
+                    item.curr_location = [player.curr_location[0],player.curr_location[1]]
+                return "You have dropped " + item.name + "."
+        return "There is not such thing you can drop"
+
+    def move(self, direction: str, player: Player) -> str:
+        """
+            This function move the player according to direction input
+        """
+
+        if direction == "north":
+            if player.curr_location[0] - 1 >= 0 and \
+                    self.map[player.curr_location[0] - 1][player.curr_location[1]] != -1:
+                player.curr_location[0] -= 1
+                player.steps_taken += 1
+                return self.update_position_information(player.curr_location, player)
+            else:
+                return "It wasn't until you almost crash on wall that you readlize you are heading in wrong direction."
+        elif direction == "south":
+            if player.curr_location[0] + 1 < len(self.map) and \
+                    self.map[player.curr_location[0] + 1][player.curr_location[1]] != -1:
+                player.curr_location[0] += 1
+                player.steps_taken += 1
+                return self.update_position_information(player.curr_location, player)
+            else:
+                return "It wasn't until you almost crash on wall that you readlize you are heading in wrong direction."
+        elif direction == "west":
+            if player.curr_location[1] - 1 >= 0 and \
+                    self.map[player.curr_location[0]][player.curr_location[1] - 1] != -1:
+                player.curr_location[1] -= 1
+                player.steps_taken += 1
+                return self.update_position_information(player.curr_location, player)
+            else:
+                return "It wasn't until you almost crash on wall that you readlize you are heading in wrong direction."
+        elif direction == "east":
+            if player.curr_location[1] + 1 < len(self.map[0]) and \
+                    self.map[player.curr_location[0]][player.curr_location[1] + 1] != -1:
+                player.curr_location[1] += 1
+                player.steps_taken += 1
+                return self.update_position_information(player.curr_location, player)
+            else:
+                return "It wasn't until you almost crash on wall that you readlize you are heading in wrong direction."
+
+    def update_position_information(self, curr_position: list[int], player: Player) -> str:
+        """
+        This function update the position information and item available when player move to a new place.
+        """
+        for location in self.locations:
+            if location.xy_axis == curr_position and location.revisit is False:
+                return self.look(player)
+            elif location.xy_axis == curr_position:
+                return location.name + ": " + location.short_description
+
+    def initialize_event_item(self, event_item_count) -> None:
+        """This method is designed for initializing the eventItem, subclass of item"""
+        temp_event_item_list = []
+        for _ in range(event_item_count):
+            temp_event_item_list.append(self.items.pop())
+
+        for temp in temp_event_item_list:
+            self.items.append(EventItem(temp.name, temp.id, temp.curr_location[0],
+                                        temp.curr_location[1], temp.short_description, temp.long_description,
+                                        temp.score))

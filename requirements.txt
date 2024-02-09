@@ -1,0 +1,4 @@
+# CSC111 Project 1
+
+#for showing ascii art image
+climage

@@ -1,30 +1,105 @@
 1
 0,1
-Room1
-testing aaaaaaaaa
-testingtestingtestingtestingtestingtestingtestingtestingtestingtestingtestingtestingtestingtestingtestingtestingtestingtestingtestingtestingtestingtesting
+Study Room#1
+You have entered the Study Room#1 on the 3rd floor of Robarts Library.
+You have entered the Study Room#1 on the 3rd floor of Robarts Library. This room is filled with desks and chairs. It is quite silent here despite the presence of many students. As you look closely, they all sharing a nervous expression, which reminds you of the trauma last night as studying for the exam... There is another Study Room on the east, or you can back north to the main lobby of RB 3rd floor.
+ImageFileData\RBRoom1.jpg
 
 2
 1,1
 RB3F
-RB3Faa
-RB3Fbb
+You are now in the main lobby of the 3rd floor of RB.
+You are now in the main lobby of the 3rd floor of RB. What appears in front of you is a big door toward a study room on this floor. Such door arouses your memory. "Had I been here last night?" You whispered, but your memory is just misty thanks to the ridiculous amount of workload you have done yesterday... You can talk with Bob standing here. You may go north to enter this room, or you can go south down to the ground floor of RB. 
+ImageFileData\RB3F.jpg
 
 3
 0,2
-Room2
-room2aa
-room2bb
+Study Room#2
+You have entered the Study Room#2 on the 3rd floor of Robarts Library.
+You have entered the Study Room#2 on the 3rd floor of Robarts Library. You suddenly found everything around you so familiar. You can even recognize the mark of scratch on a desk, indicating that you must have spent a long time sitting there for some reasons. Maybe some of your belongings are left there. Worth a closer look... There is nowhere you can go any further, except the Study Room#1 where you just came from on the west.
+ImageFileData\RBRoom2.jpg
 
 4
 2,1
-RB
-RBaa
-RBbb
+Robarts Library(RB)
+You are now on the ground floor of Robarts Library.
+You are now on the ground floor of Robarts Library. You have just made huge efforts to explain your current situation to the library staff so that they allowed you to enter this library without Tcard. You see an elevator right next to you, but for some reasons you also see a notice with "This elevator is only able to reach the 3rd floor" written... You may take this elevator north to the predestined 3rd floor of RB, or you can leave RB by heading east.
+ImageFileData\RBHall.jpg
 
 5
 2,2
 In Front of RB
-AAA
-BBB
+You are now in front of Robarts Library.
+You are now in front of Robarts Library. You found yourself so trivial under this giant library, but it also makes you feel warm because you usually spend most of the time in a day studying inside this building. It is almost like your 2nd dormitary, or it might literally be if students are allowed to stay inside overnight... You may turn west to enter RB, or you can go south down to the street in front of Sidney Smith Hall.
+ImageFileData\InFrontOfRB.jpg
+
+6
+3,2
+In Front of Sidney Smith Hall(SS)
+Your are now in front of Sidney Smith Hall.
+Your are now in front of Sidney Smith Hall. It is dynamic here as usually. Many students are relaxing on the benches outside of SS, and you hope that you can also be one of them, but you know clearly that you can't because there is an exam waiting for you... You may go northward to the street in front of RB, or you can go southward to the north entrance of Bahen Center.
+ImageFileData\InFrontOfSS.jpg
+
+7
+4,2
+BA North Entrance
+You are now at the north entrance of Bahen Center(BA).
+You are now at the north entrance of Bahen Center. Perhaps this is the building that you are most familiar with. Since you are a CS student, most of the tutorials take place in this building, and you are also able to freely access many of the facilities and resources inside. What a friendly building for CS student... You may enter the BA Hall through the entrance on your west, go northward to SS, or take a few steps to the south entrance of Bahen Center.
+ImageFileData\BANorthEntrance.jpg
+
+8
+4,1
+BA Hall
+You are now in the main hall of BA.
+You are now in the main hall of BA. Every time you enter this building, you become interested in the internal structure. It feels like that BA is actually the connection of two separate building, and the main hall you are standing on serves as the bridge... You may reach out to the Help Center on the west, enter a study room on the south, or go eastward to exit.
+ImageFileData\BAHall.jpg
+
+9
+4,0
+BA Help Center
+You are now at the Help Center of BA.
+You are now at the Help Center of BA. As its name suggests, this is a place where you can ask for help. Sometimes students will bring some items forgotten by their careless owners to here. Seems like you are just one of those careless owners... There is nowhere you can go any further, except the main hall on the east where you just came from.
+ImageFileData\BAHelpCenter.jpg
+
+10
+5,1
+Study Room
+You are now in a study room of BA.
+You are now in a study room of BA. You see many students studying here. Some are watching online tutoring videos, some are reviewing their course notes, and some are writing the cheat sheets for exams... Wait, this reminds you of something... You can talk to Steve here. You may go to the main hall on the north, or you can go east to the south entrance of BA.
+ImageFileData\BARoom.jpg
+
+11
+5,2
+BA South Entrance
+You are now at the south entrance of Bahen Center(BA).
+You are now at the south entrance of Bahen Center(BA). It is very crowded here. Students passing through you back and forth. Unlike you, they all have a destination. You stand still, making yourself distinguished from surroundings... You may go to the study room on the west, the street in front of Starbucks on the south, or the north entrance of BA on the, well, north.
+ImageFileData\BASouthEntrance.jpg
+
+12
+6,2
+In Front of Starbucks
+You are now standing in front of the Starbucks on College St.
+You are now standing in front of the Starbucks on College St. You can see through the glass that students are all relaxing inside with a cup of coffee, and you can't wait to try one as well. But, just before you step into the entrance, you realize that you didn't bring your wallet with you : ( ... You may go northward to the south entrance of BA, enter Starbucks through the entrance on your south, or move eastward to the Exam Center.
+ImageFileData\InFrontOfStarbuck.jpg
+
+13
+7,2
+Starbuks
+You are now inside the Starbucks.
+You are now inside the Starbucks. You are confusing about why you are here given that you don't have your wallet with you, and you feel the fascinating smell from cups of coffee around you. What a torturous senario! Suddenly you notice a voucher sample sticked on the wall... There is nowhere you can go any further, and you can only go north to exit.
+ImageFileData\Starbuck.jpg
+
+14
+6,3
+Exam Center
+You are now in the Exam Center.
+You are now in the Exam Center. It is crowded here. Some students are waiting for entering the test rooms, some have just finished the tests. It is very easy to distinguish, since the latter would never show smile on their face. You hope you won't become one of them... You may go westward to the street in front of Starbucks, or you can enter your assigned exam room on your east.
+ImageFileData\TestCenter.jpg
+
+15
+6,4
+Exam Room
+You are now inside the exam room.
+You are now inside the exam room. This is where you will take your exam. Everyone inside this room is nervous except the staff. You see some students even showing a prayer's posture, but you know they are actually tricking themselves because it is a exam from MAT137... There is nowhere you can go any further.
+ImageFileData\TestRoom.jpg
 
