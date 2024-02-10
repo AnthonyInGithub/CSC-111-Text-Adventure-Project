@@ -93,7 +93,7 @@ ImageFileData\Starbuck.jpg
 6,3
 Exam Center
 You are now in the Exam Center.
-You are now in the Exam Center. It is crowded here. Some students are waiting for entering the test rooms, some have just finished the tests. It is very easy to distinguish, since the latter would never show smile on their face. You hope you won't become one of them... You may go westward to the street in front of Starbucks, or you can enter your assigned exam room on your east.
+You are now in the Exam Center. It is crowded here. Some students are waiting for entering the test rooms, some have just finished the tests. It is very easy to distinguish, since the latter would never show smile on their face. You hope you won't become one of them... You may go westward to the street in front of Starbucks, or you can enter your assigned exam room on your east. INPORTANT NOTE: for the sake of academic integrity, once students entered the exam room, they are NOT allowed to leave the room no matter how close to when the exam begins.
 ImageFileData\TestCenter.jpg
 
 15

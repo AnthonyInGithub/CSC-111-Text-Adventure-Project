@@ -17,8 +17,10 @@ HELPER_MSG = ("This game is played by typing command in the console\n"
               "examine item_name: take a close look at a specific item\n"
               "talk person_name: talk to someone base on name\n"
               "exit: quit the game\n"
+              "score: display the socre you earned so far\n"
               "inventory: check your player backpack\n"
-              "help: print this helper message again\n"
+              "help: print this helper message again\n\n"
+              "sample calls of command: (1)TYPE: 'north'; (2)TYPE: 'take tcard'\n"
               "IMPORTANT: FOR THE BEST VISUAL EFFECT, PLEASE ZOOM THE SIZE OF FONT SMALLER AND EXPAND THE CONSOLE\n"
               )
 MAX_LENGTH_OF_MSG_PER_LINE = 100
@@ -64,7 +66,7 @@ def determine_action(world: World, player: Player, msg: str) -> str:
         else:
             return "you might just have a typo"
 
-    return 'invalid command'
+    return 'invalid (use of) command'
 
 
 def final_comment(player: Player) -> None:
@@ -77,6 +79,7 @@ def final_comment(player: Player) -> None:
     elif (player.curr_location == player.final_location and player.check_inventory_by_id(0)
           and player.check_inventory_by_id(3) and player.check_inventory_by_id(2) and player.check_inventory_by_id(1)):
         # arrive test center with your Tcard, other's Tcard, luck pen, cheat sheet
+        player.curr_score += 30.0
         print("You catch up the exam. And magic happens. Your Tcard copy itself in "
               "your backpack. Now you have two Tcard. Hurrah!")
     elif (player.curr_location == player.final_location and player.check_inventory_by_id(3)
@@ -86,7 +89,7 @@ def final_comment(player: Player) -> None:
         print(
             "'Hey, this is not your Tcard, why are you bringing this Tcard to the exam center?"
             " What's your purpose?' \nDespite how much you explain, you are accused for academic"
-            " offense for taking an exam for yourself.")
+            " offense for taking an exam for other person.")
     elif player.curr_location == player.final_location:
         # arrive test center without stuff needed
         print("You don't know why you simply go to exam center without stuff you needed."
@@ -95,6 +98,7 @@ def final_comment(player: Player) -> None:
           and player.check_inventory_by_id(1) and player.check_inventory_by_id(2)
             and not player.check_inventory_by_id(3)):
         # arrive with everything just needed, winning the game
+        player.curr_score += 50.0
         print("Finding all you need and bring it to exam center on time is tough, but the exam is tougher."
               " \nDespite how much you try, the proof question is far beyond the scope of your ability."
               "\n Is it worthy to try so hard to fail an exam?")
@@ -132,7 +136,7 @@ if __name__ == "__main__":
     print()
     final_comment(player)
     print("\nThat's the End of the Game, Thanks for Playing! "+"You Final Score Is: "
-          + str(player.curr_score+player.max_step-player.steps_taken)+". Feel Free to Try More Ending!")
+          + str(player.curr_score+player.max_step-player.steps_taken)+". Feel Free to Try More Endings!")
     # import python_ta
     #
     # python_ta.check_all(config={

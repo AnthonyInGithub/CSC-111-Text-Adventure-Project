@@ -140,6 +140,7 @@ class Player:
         - curr_location: current location of the player
         - curr_score: current score of the player
         - final_location: the position of exam room
+        - mission_completed: whether the player has solved the puzzle
 
     """
 
@@ -149,6 +150,7 @@ class Player:
     max_step: int
     curr_score: float
     final_location: list[int]
+    mission_completed: bool
 
     def __init__(self, x: int, y: int) -> None:
         """
@@ -165,6 +167,7 @@ class Player:
         self.max_step = 30
         self.curr_score = 0.0
         self.final_location = [6, 4]
+        self.mission_completed = False
 
     def update_inventory(self, item: Item, action: str) -> None:
         """
@@ -193,10 +196,16 @@ class Player:
         Talk with the NPC to trigger out extra plot if any of NPCs exists in the location.
         """
         if location == [5, 1] and name == "steve":
-            return ("You: Hi, do you see any of my T-card, cheat sheet, or pen? \n Steve: I did "
-                    "find a pen and a cheat sheet and I just left them in the Help Center.")
+            return ("Steve: I just took a ownerless pen and a ownerless sheet and left them at the Help Center. \n"
+                    "Feel free to check out if they are yours.")
+
         elif location == [1, 1] and name == "bob":
-            return "Bob: I LOST MY T-CARD! I AM GOING TO SUICIDE!\nYou: ..."
+            if not self.mission_completed:
+                return "Bob: I LOST MY T-CARD! I AM GOING TO SUICIDE!\nYou: ..."
+            else:
+                return "Bob: Hey my life saver. Enjoy the coffee and good luck on the exam!"
+        elif (location == [5, 1] and name != "steve") or (location == [1, 1] and name != "bob"):
+            return "nobody here called " + name + '. '
         else:
             return "There is nobody here you can talk with."
 
@@ -371,7 +380,7 @@ class World:
                 print(climage.convert(location.image_file_location, is_unicode=True, width=120) + "\n")
         item_short_description = "\nItem Available Here:\n"
         for item in self.items:
-            if item.curr_location == player.curr_location:
+            if item.curr_location == player.curr_location and item.can_add:
                 item_short_description += item.name + ": "
                 item_short_description += item.short_description + "\n"
         if item_short_description == "\nItem Available Here:\n":  # nothing is here
@@ -399,6 +408,11 @@ class World:
         for voucher_finder in self.items:
             if voucher_finder.name == "voucher":
                 voucher = voucher_finder
+        # tcard1_index = int
+        # for x in range(0, len(self.items)):
+        #     if self.items[x].name == 'tcard1':
+        #         tcard1_index = x
+
         if not player.inventory:
             return 'Your inventory is currently empty!'
         for item in player.inventory:
@@ -407,6 +421,7 @@ class World:
                 item.drop_event_reward1()
                 player.update_inventory(voucher, "take")
                 player.update_inventory(item, "drop")
+                player.mission_completed = True
                 return "You have dropped " + item.name + "."
             elif (name == item.name and isinstance(item, EventItem) and player.curr_location == [7, 2]
                   and item.item_id == 4):
