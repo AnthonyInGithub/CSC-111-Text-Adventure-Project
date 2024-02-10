@@ -1,4 +1,8 @@
 # CSC111 Project 1
 
-#for showing ascii art image
+#for showing ascii art image, source code from: https://github.com/pnappa/CLImage
 climage
+
+# if you meet error "ModuleNotFoundError: No module named 'pkg_resources'", try the following method:#https://stackoverflow.com/questions/7446187/no-module-named-pkg-resources
+
+#IMPORTANT: the please check the run_solution.py in our project before testing our solution.txt and game_over.txt. The original run_solution.py doesn't use UTF-8 encoding. And we have to manually set the encoding to UTF-8.

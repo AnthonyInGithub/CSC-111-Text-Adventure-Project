@@ -23,7 +23,7 @@ ImageFileData\RBRoom2.jpg
 2,1
 Robarts Library(RB)
 You are now on the ground floor of Robarts Library.
-You are now on the ground floor of Robarts Library. You have just made huge efforts to explain your current situation to the library staff so that they allowed you to enter this library without Tcard. You see an elevator right next to you, but for some reasons you also see a notice with "This elevator is only able to reach the 3rd floor" written... You may take this elevator north to the predestined 3rd floor of RB, or you can leave RB by heading east.
+You are now on the ground floor of Robarts Library. It wasn't the first time you wonder why RB only allows entrance on one side of the door, the exit on the other side. You see an elevator right next to you, but for some reasons you also see a notice with "This elevator is only able to reach the 3rd floor" written... You may take this elevator north to the predestined 3rd floor of RB, or you can leave RB by heading east.
 ImageFileData\RBHall.jpg
 
 5
@@ -84,7 +84,7 @@ ImageFileData\InFrontOfStarbuck.jpg
 
 13
 7,2
-Starbuks
+Starbucks
 You are now inside the Starbucks.
 You are now inside the Starbucks. You are confusing about why you are here given that you don't have your wallet with you, and you feel the fascinating smell from cups of coffee around you. What a torturous senario! Suddenly you notice a voucher sample sticked on the wall... There is nowhere you can go any further, and you can only go north to exit.
 ImageFileData\Starbuck.jpg

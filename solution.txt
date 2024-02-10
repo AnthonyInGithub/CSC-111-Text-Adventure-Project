@@ -1,0 +1,41 @@
+west
+north
+talk bob
+north
+take tcard1
+inventory
+score
+east
+take tcard2
+inventory
+score
+west
+south
+examine tcard1
+drop tcard1
+inventory
+score
+south
+east
+south
+south
+west
+south
+talk steve
+north
+west
+take cheat sheet
+inventory
+score
+take lucky pen
+inventory
+score
+east
+east
+south
+south
+south
+drop voucher
+north
+east
+east

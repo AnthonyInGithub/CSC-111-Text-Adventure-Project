@@ -183,7 +183,7 @@ class Player:
         """
         if self.curr_location == self.final_location:
             return False
-        elif self.steps_taken > self.max_step:
+        elif self.steps_taken >= self.max_step:
             return False
 
         return True
