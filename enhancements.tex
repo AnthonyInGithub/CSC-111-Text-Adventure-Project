@@ -1,0 +1,46 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.75in]{geometry}
+
+\title{CSC111 Winter 2024 Project 1}
+\author{TODO: FILL IN YOUR NAME(S) HERE}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section*{Enhancements}
+
+
+\begin{enumerate}
+
+\item enhancement \#1 Puzzle
+	\begin{itemize}
+	\item Besides player's T-Card, there will be another T-Card being placed somewhere that belongs to Bob(a NPC who is in similar situation as the player does). If the player take and recognize this T-Card and drop it on where Bob is at, as a reward, Bob will give the player a Starbucks voucher that can offer extra steps to the player when being dropped inside Starbucks. Carrying the wrong T-Card to the exam room will not pass the game but waste of steps.
+	\item Complexity level : medium
+	\item To implement this puzzle, we need to add a extra command "talk" for the interaction between NPCs and the player, and another command "examine" in order for the player to recognize the two T-Cards. Also, we have created a EventItem class, a subclass of Item, to assign special properties to relevant items in this puzzle. These properties include two EventItem functions that add voucher into player's inventory and restore player's remaining steps, respectively, under certain conditions. It did take some time to implement and organize all these features, but technically they are not so complicated, so we believe medium is a suitable complexity level.
+	% Feel free to add more subheadings if you need
+	\end{itemize}
+
+% Uncomment below section if you have more enhancements; copy-paste as many times as needed
+\item enhancement \#2 Special Feature
+	\begin{itemize}
+    \item NOTE: The demonstration of this feature requires installing an extra python library to convert images into their digital representations(see requirement.txt for details). 
+	\item This feature provides image description(using digits) for all the locations and will be displayed accompanied with the short description for the location once the player has entered a new location. 
+	\item Complexity level : low
+	\item To implement this feature, we had to first go through all the locations and took a photo for each of them(literally). Also, we created a new instance attribute for Location class to store the address of the image of each location. Each image is converted into digital representation through the function from the library and printed onto the console as the player entering a new location or calling "look" command. Finally, we adjusted the size of digital representation to fit the window of python console. Overall this is not complex(with the assistance of the library), but we believe it is somehow interesting as seeing the images of familiar places being represented as digits.
+	% Feel free to add more subheadings if you feel the need
+    
+	\end{itemize}
+
+\end{enumerate}
+
+
+\section*{Extra Gameplay Files}
+
+If you have any extra \texttt{gameplay\#.txt} files, describe them below.
+
+\end{document}

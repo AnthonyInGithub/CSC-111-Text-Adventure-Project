@@ -34,19 +34,17 @@ class Item:
         - score: score earn by taking this item
         - can_earn: socre can be only earned when item is taken for the first time
 
-    Representation Invariants:
-        - # TODO
     """
     name: str
-    id: int
+    item_id: int
     curr_location: list[int]
     short_description: str
     long_description: str
     score: float
     can_add: bool
-    can_earn = True
+    can_earn: bool
 
-    def __init__(self, name: str, id: int, location_x: int, location_y: int,
+    def __init__(self, name: str, item_id: int, location_x: int, location_y: int,
                  short_description: str, long_description: str, score: float) -> None:
         """Initialize a new item.
         """
@@ -61,12 +59,13 @@ class Item:
         # All item objects in your game MUST be represented as an instance of this class.
 
         self.name = name
-        self.id = int(id)
+        self.item_id = int(item_id)
         self.curr_location = [int(location_x), int(location_y)]
         self.short_description = short_description
         self.long_description = long_description
         self.score = float(score)
         self.can_add = True
+        self.can_earn = True
 
 
 class Location:
@@ -87,7 +86,7 @@ class Location:
         - long_deescription != ""
 
     """
-    id: int
+    item_id: int
     xy_axis: list[int]
     name: str
     short_description: str
@@ -96,11 +95,11 @@ class Location:
     revisit: bool
     image_file_location: str
 
-    def __init__(self, id: int, xy_axis: list[int], name: str, short_description: str, long_description: str,
+    def __init__(self, item_id: int, xy_axis: list[int], name: str, short_description: str, long_description: str,
                  image_file_location: str, available_items: Optional[list[Item]] = None) -> None:
         """Initialize a new location.
         """
-        self.id = id
+        self.item_id = item_id
         self.xy_axis = xy_axis
         self.name = name
         self.short_description = short_description
@@ -140,18 +139,16 @@ class Player:
         - steps_taken: how many steps the player has taken so far
         - curr_location: current location of the player
         - curr_score: current score of the player
-        - can_add: each item can only be taken once before it is dropped
+        - final_location: the position of exam room
 
-    Representation Invariants:
-        - # TODO
     """
 
     inventory: list[Item]
     steps_taken: int
     curr_location: list[int]
-    MAX_STEP: int
+    max_step: int
     curr_score: float
-    FINAL_LOCATION: list[int]
+    final_location: list[int]
 
     def __init__(self, x: int, y: int) -> None:
         """
@@ -165,11 +162,11 @@ class Player:
         self.curr_location = [x, y]
         self.inventory = []
         self.steps_taken = 0
-        self.MAX_STEP = 30
+        self.max_step = 30
         self.curr_score = 0.0
-        self.FINAL_LOCATION = [6,4]
+        self.final_location = [6, 4]
 
-    def update_inventory(self, item: Item, action: str):
+    def update_inventory(self, item: Item, action: str) -> None:
         """
         pop the item from inventory if action is drop, append the item if action is take
         """
@@ -184,9 +181,9 @@ class Player:
         """
         check the condition of the game
         """
-        if self.curr_location == self.FINAL_LOCATION:
+        if self.curr_location == self.final_location:
             return False
-        elif self.steps_taken > self.MAX_STEP:
+        elif self.steps_taken > self.max_step:
             return False
 
         return True
@@ -196,7 +193,8 @@ class Player:
         Talk with the NPC to trigger out extra plot if any of NPCs exists in the location.
         """
         if location == [5, 1] and name == "steve":
-            return ("You: Hi, do you see any of my T-card, cheat sheet, or pen? \n Steve: I did find a pen and a cheat sheet and I just left them in the Help Center.")
+            return ("You: Hi, do you see any of my T-card, cheat sheet, or pen? \n Steve: I did "
+                    "find a pen and a cheat sheet and I just left them in the Help Center.")
         elif location == [1, 1] and name == "bob":
             return "Bob: I LOST MY T-CARD! I AM GOING TO SUICIDE!\nYou: ..."
         else:
@@ -209,7 +207,7 @@ class Player:
         self.curr_score += item.score
         item.can_earn = False
 
-    def print_inventory(self)->str:
+    def print_inventory(self) -> str:
         """
         print out all the items in player's inventory
         """
@@ -220,7 +218,7 @@ class Player:
         Check whether there exist such an item by item_id.
         """
         for item in self.inventory:
-            if item.id == item_id:
+            if item.item_id == item_id:
                 return True
         return False
 
@@ -230,19 +228,19 @@ class EventItem(Item):
     This is a subclass of Item class.
     """
 
-    def __init__(self, name: str, id: int, location_x: int, location_y: int, short_description: str,
-                 long_description: str, score: float):
-        super().__init__(name, id, location_x, location_y, short_description, long_description, score)
+    def __init__(self, name: str, item_id: int, location_x: int, location_y: int, short_description: str,
+                 long_description: str, score: float) -> None:
+        super().__init__(name, item_id, location_x, location_y, short_description, long_description, score)
         self.can_add = True
 
-    def drop_event_reward2(self, player: Player):
+    def drop_event_reward2(self, player: Player) -> None:
         """
         player gets extra steps after dropping this item
         """
         print("You bought a cup of coffee using this voucher. Your energy is restored!")
         player.steps_taken -= 5
 
-    def drop_event_reward1(self):
+    def drop_event_reward1(self) -> None:
         """
         player gets another item by dropping this item to NPC
         """
@@ -287,12 +285,13 @@ class World:
             self.locations.append(
                 Location(location[0], location[1], location[2], location[3], location[4], location[5]))
         self.items = []
-        for line in open(items_data):
-            new_item = line.split('-')
-            self.items.append(
-                Item(new_item[0], new_item[1], new_item[2], new_item[3], new_item[4], new_item[5], new_item[6]))
-        EVENT_ITEM_NUMBER = 2
-        self.initialize_event_item(EVENT_ITEM_NUMBER)
+        with open(items_data) as f:
+            for line in f:
+                new_item = line.split('-')
+                self.items.append(
+                    Item(new_item[0], new_item[1], new_item[2], new_item[3], new_item[4], new_item[5], new_item[6]))
+        event_item_number = 2
+        self.initialize_event_item(event_item_number)
 
         # NOTE: You may choose how to store location and item data; create your own World methods to handle these
         # accordingly. The only requirements:
@@ -312,8 +311,9 @@ class World:
         Return this list representation of the map.
         """
         _my_map = []
-        for line in open(map_data):
-            _my_map.append([int(x) for x in line.split()])
+        with open(map_data) as f:
+            for line in f:
+                _my_map.append([int(x) for x in line.split()])
         return _my_map
 
     # NOTE: The method below is REQUIRED. Complete it exactly as specified.
@@ -331,18 +331,19 @@ class World:
         """
             This is a helper function for initilize location
         """
-        location_files = open(location_data).readlines()
-        _my_all_location_information = []
-        temp = ''
-        for line in location_files:
-            if line == '\n':
-                location_list = temp.split('\n')[0:-1]
-                location_list[0] = int(location_list[0])
-                location_list[1] = [int(i) for i in location_list[1].split(',')]
-                _my_all_location_information.append(location_list)
-                temp = ''
-                continue
-            temp += line
+        with open(location_data) as f:
+            location_files = f.readlines()
+            _my_all_location_information = []
+            temp = ''
+            for line in location_files:
+                if line == '\n':
+                    location_list = temp.split('\n')[0:-1]
+                    location_list[0] = int(location_list[0])
+                    location_list[1] = [int(i) for i in location_list[1].split(',')]
+                    _my_all_location_information.append(location_list)
+                    temp = ''
+                    continue
+                temp += line
         return _my_all_location_information
 
     def examine(self, name: str, player: Player) -> str:
@@ -358,7 +359,7 @@ class World:
         #     if item.name == name and item.init_location == player.curr_location:
         #         return item.long_description
 
-    def look(self, player: Player):
+    def look(self, player: Player) -> str:
         """
         show the long description of the location and short description of items(if any) in that location
         """
@@ -373,7 +374,7 @@ class World:
             if item.curr_location == player.curr_location:
                 item_short_description += item.name + ": "
                 item_short_description += item.short_description + "\n"
-        if item_short_description == "\nItem Available Here:\n": #nothing is here
+        if item_short_description == "\nItem Available Here:\n":  # nothing is here
             item_short_description += "None\n"
 
         return location_description + "\n" + item_short_description
@@ -394,24 +395,31 @@ class World:
         """
         drop an item and update player's inventory
         """
+        voucher = Item
+        for voucher_finder in self.items:
+            if voucher_finder.name == "voucher":
+                voucher = voucher_finder
         if not player.inventory:
             return 'Your inventory is currently empty!'
         for item in player.inventory:
-            if name == item.name:
-                if isinstance(item, EventItem) and player.curr_location == [1, 1] and item.id == 3:  # T card event
-                    item.drop_event_reward1()
-                    for voucher_finder in self.items:
-                        if voucher_finder.name == "voucher":
-                            player.update_inventory(voucher_finder, "take")
-                    player.update_inventory(item, "drop")
-                elif isinstance(item, EventItem) and player.curr_location == [7,2] and item.id == 4:  # coffee event
-                    item.drop_event_reward2(player)
-                    player.update_inventory(item, "drop")
-                else:
-                    player.update_inventory(item, "drop")
-                    item.can_add = True
-                    item.curr_location = [player.curr_location[0],player.curr_location[1]]
+            if (name == item.name and isinstance(item, EventItem) and player.curr_location == [1, 1]
+                    and item.item_id == 3):  # T card event
+                item.drop_event_reward1()
+                player.update_inventory(voucher, "take")
+                player.update_inventory(item, "drop")
                 return "You have dropped " + item.name + "."
+            elif (name == item.name and isinstance(item, EventItem) and player.curr_location == [7, 2]
+                  and item.item_id == 4):
+                # coffee event
+                item.drop_event_reward2(player)
+                player.update_inventory(item, "drop")
+                return "You have dropped " + item.name + "."
+            elif name == item.name:
+                player.update_inventory(item, "drop")
+                item.can_add = True
+                item.curr_location = [player.curr_location[0], player.curr_location[1]]
+                return "You have dropped " + item.name + "."
+
         return "There is not such thing you can drop"
 
     def move(self, direction: str, player: Player) -> str:
@@ -451,6 +459,7 @@ class World:
                 return self.update_position_information(player.curr_location, player)
             else:
                 return "It wasn't until you almost crash on wall that you readlize you are heading in wrong direction."
+        return ''
 
     def update_position_information(self, curr_position: list[int], player: Player) -> str:
         """
@@ -461,14 +470,27 @@ class World:
                 return self.look(player)
             elif location.xy_axis == curr_position:
                 return location.name + ": " + location.short_description
+        return ''
 
-    def initialize_event_item(self, event_item_count) -> None:
+    def initialize_event_item(self, event_item_count: int) -> None:
         """This method is designed for initializing the eventItem, subclass of item"""
         temp_event_item_list = []
         for _ in range(event_item_count):
             temp_event_item_list.append(self.items.pop())
 
         for temp in temp_event_item_list:
-            self.items.append(EventItem(temp.name, temp.id, temp.curr_location[0],
+            self.items.append(EventItem(temp.name, temp.item_id, temp.curr_location[0],
                                         temp.curr_location[1], temp.short_description, temp.long_description,
                                         temp.score))
+
+
+if __name__ == '__main__':
+
+    # When you are ready to check your work with python_ta, uncomment the following lines.
+    # (In PyCharm, select the lines below and press Ctrl/Cmd + / to toggle comments.)
+    # You can use "Run file in Python Console" to run PythonTA,
+    # and then also test your methods manually in the console.
+    import python_ta
+    python_ta.check_all(config={
+        'max-line-length': 120
+    })
