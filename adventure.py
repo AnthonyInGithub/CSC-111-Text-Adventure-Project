@@ -17,14 +17,16 @@ HELPER_MSG = ("This game is played by typing command in the console\n"
               "examine item_name: take a close look at a specific item in your inventory\n"
               "talk person_name: talk to someone base on name\n"
               "exit: quit the game\n"
+              "score: display the socre you earned so far\n"
               "inventory: check your player backpack\n"
-              "help: print this helper message again\n"
+              "help: print this helper message again\n\n"
+              "sample calls of command: (1)TYPE: 'north'; (2)TYPE: 'take tcard'\n"
               "IMPORTANT: FOR THE BEST VISUAL EFFECT, PLEASE ZOOM THE SIZE OF FONT SMALLER AND EXPAND THE CONSOLE\n"
               )
 MAX_LENGTH_OF_MSG_PER_LINE = 100
 
 
-def determine_action(world: World, player: Player, msg: str) -> str:
+def determine_action(world: World, user: Player, msg: str) -> str:
     """
     The action in our adventure game can be classified as two kinds.
     1. Action  2. Action + Object
@@ -33,7 +35,7 @@ def determine_action(world: World, player: Player, msg: str) -> str:
     msg = msg.lower()
     msg = msg.split(" ", 1)
     if len(msg) == 1 and msg[0] in ["north", 'south', 'west', 'east']:
-        return world.move(msg[0], player)
+        return world.move(msg[0], user)
         # elif msg[0] == "south":
         #     return world.move("south", player)
         # elif msg[0] == "west":
@@ -41,62 +43,64 @@ def determine_action(world: World, player: Player, msg: str) -> str:
         # elif msg[0] == "east":
         #     return world.move("east", player)
     elif len(msg) == 1 and msg[0] == "look":
-        return world.look(player)
+        return world.look(user)
     elif len(msg) == 1 and msg[0] == "exit":  # exit function
         sys.exit()
     elif len(msg) == 1 and msg[0] == "inventory":
-        return player.print_inventory()
+        return user.print_inventory()
     elif len(msg) == 1 and msg[0] == "help":
         return HELPER_MSG
     elif len(msg) == 1 and msg[0] == "score":
-        return "Your current score is: " + str(player.curr_score)
+        return "Your current score is: " + str(user.curr_score)
 
     if len(msg) == 2:
         if msg[0] == "take":
             # item.take_object(msg[1])
-            return world.take(msg[1], player)
+            return world.take(msg[1], user)
         elif msg[0] == "drop":
-            return world.drop(msg[1], player)
+            return world.drop(msg[1], user)
         elif msg[0] == "examine":
-            return world.examine(msg[1], player)
+            return world.examine(msg[1], user)
         elif msg[0] == "talk":
-            return player.talk(player.curr_location, msg[1])
+            return user.talk(user.curr_location, msg[1])
         else:
             return "you might just have a typo"
 
-    return 'invalid command'
+    return 'invalid (use of) command'
 
 
-def final_comment(player: Player) -> None:
+def final_comment(user: Player) -> None:
     """
     Final comment of the game after game lost/win
     """
-    if (player.curr_location == player.final_location and player.check_inventory_by_id(0)
-            and player.check_inventory_by_id(3) and player.check_inventory_by_id(2) and player.check_inventory_by_id(
+    if (user.curr_location == user.final_location and user.check_inventory_by_id(0)
+            and user.check_inventory_by_id(3) and user.check_inventory_by_id(2) and user.check_inventory_by_id(
                 1)):
         # arrive test center with your Tcard, other's Tcard, luck pen, cheat sheet
+        user.curr_score += 30.0
         print("You catch up the exam. And magic happens. Your Tcard copy itself in "
               "your backpack. Now you have two Tcard. Hurrah!")
-    elif (player.curr_location == player.final_location and player.check_inventory_by_id(3)
-          and player.check_inventory_by_id(1) and player.check_inventory_by_id(2)
-          and not player.check_inventory_by_id(0)):
+    elif (user.curr_location == user.final_location and user.check_inventory_by_id(3)
+          and user.check_inventory_by_id(1) and user.check_inventory_by_id(2)
+          and not user.check_inventory_by_id(0)):
         # arrive test center with other's Tcard, luck pen, cheat sheet
         print(
             "'Hey, this is not your Tcard, why are you bringing this Tcard to the exam center?"
             " What's your purpose?' \nDespite how much you explain, you are accused for academic"
             " offense for taking an exam for yourself.")
-    elif (player.curr_location == player.final_location and player.check_inventory_by_id(0)
-          and player.check_inventory_by_id(1) and player.check_inventory_by_id(2)
-          and not player.check_inventory_by_id(3)):
+    elif (user.curr_location == user.final_location and user.check_inventory_by_id(0)
+          and user.check_inventory_by_id(1) and user.check_inventory_by_id(2)
+          and not user.check_inventory_by_id(3)):
         # arrive with everything just needed, winning the game
+        user.curr_score += 50.0
         print("Finding all you need and bring it to exam center on time is tough, but the exam is tougher."
               " \nDespite how much you try, the proof question is far beyond the scope of your ability."
               "\n Is it worthy to try so hard to fail an exam?")
-    elif player.curr_location == player.final_location:
+    elif user.curr_location == user.final_location:
         # arrive test center without stuff needed
         print("You don't know why you simply go to exam center without stuff you needed."
               " \nI mean, everyone has freedom to do stupid things.")
-    elif player.steps_taken >= player.max_step:
+    elif user.steps_taken >= user.max_step:
         # does not arrive at given step
         print("Just a few steps away, but time has no mercy. You fail to catch up with the exam before it starts.")
 
@@ -134,8 +138,8 @@ if __name__ == "__main__":
     final_comment(player)
     print("\nThat's the End of the Game, Thanks for Playing! " + "You Final Score Is: "
           + str(player.curr_score + player.max_step - player.steps_taken) + ". Feel Free to Try More Ending!")
-    import python_ta
-
-    python_ta.check_all(config={
-        'max-line-length': 120
-    })
+    # import python_ta
+    #
+    # python_ta.check_all(config={
+    #     'max-line-length': 120
+    # })
